@@ -2,31 +2,41 @@ from src.tools.loader import load_data
 
 TESTING = False
 
+
+def parse_input(data):
+    left = []
+    right = []
+    for line in data:
+        a, b = map(int, line.split())
+        left.append(a)
+        right.append(b)
+    return left, right
+
+
+def get_total_distance(left, right):
+    diff_sum = 0
+    for i in range(len(left)):
+        diff_sum += abs(sorted(left)[i] - sorted(right)[i])
+    return diff_sum
+
+
+def get_sim_score(left, right):
+    sim_sum = 0
+    for el in left:
+        sim_sum += right.count(el) * el
+    return sim_sum
+
+
 if __name__ == "__main__":
     data = load_data(TESTING, "\n")
+    left, right = parse_input(data)
 
-    left_list = []
-    right_list = []
-    for line in data:
-        a, b = list(map(int, line.split()))
-        left_list.append(a)
-        right_list.append(b)
+    # PART 1
+    # test:        11
+    # answer: 1579939
+    print(get_total_distance(left, right))
 
-    left_list.sort()
-    right_list.sort()
-
-    # print(left_list, right_list)
-
-    sum = 0
-
-    for i in range(len(left_list)):
-        sum += abs(left_list[i]-right_list[i])
-
-    print(sum)
-
-    similar = 0
-
-    for el in left_list:
-        similar += right_list.count(el)*el
-
-    print(similar)
+    # PART 2
+    # test:         31
+    # answer: 20351745
+    print(get_sim_score(left, right))
