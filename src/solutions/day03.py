@@ -1,54 +1,51 @@
 from src.tools.loader import load_data
+import re
 
 TESTING = False
 
 
+def find_instruction_sum(instruction, do_dont):
+    if do_dont:
+        instruction = enabled_instruction(instruction)
+    pattern = r"mul\((\d{1,3}),(\d{1,3})\)"
+    matches = re.findall(pattern, instruction)
+    result = 0
+    for match in matches:
+        result += int(match[0]) * int(match[1])
+
+    return result
+
+
+def enabled_instruction(instruction):
+    enabled_instruction = ''
+    current_index = 0
+
+    while True:
+        start_index = instruction.find("don't()", current_index)
+        if start_index == -1:
+            enabled_instruction += instruction[current_index:]
+            break
+
+        enabled_instruction += instruction[current_index:start_index]
+        end_index = instruction.find("do()", start_index)
+        if end_index == -1:
+            break
+
+        current_index = end_index
+    
+    return enabled_instruction
+
+
 if __name__ == "__main__":
-    data = load_data(TESTING, "'nothing")
-    sequence = data[0]
+    instruction = load_data(TESTING, '\n\n')[0]
+    
+    # PART 1
+    # test:         161
+    # answer: 174561379
+    print(find_instruction_sum(instruction, False))
 
-    next_mul = 0
-    prev_next_mul = 0
-    done = False
-    add_up = 0
-
-    while not done:
-        prev_next_mul = next_mul
-        next_mul = sequence.find('mul', next_mul)
-        next_dont = sequence.find("don't()", prev_next_mul)
-        next_do = sequence.find("do()", prev_next_mul)
-        if next_dont != -1 and next_mul != -1 and next_dont < next_mul:
-            next_do = sequence.find("do()", next_dont)
-            if next_do != -1:
-                next_mul = next_do
-            else:
-                next_mul = 2**100
-        else:
-
-            if next_mul == -1:
-                done = True
-                continue
-            else:
-                if sequence[next_mul+3] == '(':
-                    len_dig1 = 0
-                    if sequence[next_mul+4].isdigit():
-                        len_dig1 += 1
-                        if sequence[next_mul+5].isdigit():
-                            len_dig1 += 1
-                            if sequence[next_mul+6].isdigit():
-                                len_dig1 += 1
-                        if sequence[next_mul+3+len_dig1+1] == ',':
-                            len_dig2 = 0
-                            if sequence[next_mul+3+len_dig1+2].isdigit():
-                                len_dig2 += 1
-                                if sequence[next_mul+3+len_dig1+3].isdigit():
-                                    len_dig2 += 1
-                                    if sequence[next_mul+3+len_dig1+4].isdigit():
-                                        len_dig2 += 1
-                                if sequence[next_mul+3+len_dig1+len_dig2+2] == ")":
-                                    add_up += int(sequence[next_mul+3+1:next_mul+3+1+len_dig1]) * int(sequence[next_mul+3+1+len_dig1+1:next_mul+3+1+len_dig1+len_dig2+1])
-            next_mul += 1
-
-
-    print(add_up)
-
+    # PART 2
+    # test:          48
+    # answer: 106921067
+    print(find_instruction_sum(instruction, True))
+    
