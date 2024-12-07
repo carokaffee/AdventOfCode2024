@@ -7,7 +7,7 @@ My solutions for AoC 2024 written in Python.
 | Day :christmas_tree: | Problem | Solution | | Day :christmas_tree: | Problem | Solution |
 | :---: | --- | --- | --- | :---: | --- | --- |
 | 01 | [Historian Hysteria](https://adventofcode.com/2024/day/1) | [day01.py](src/solutions/day01.py) || 14 | [](https://adventofcode.com/2024/day/14) | [](src/solutions/day14.py) |
-| 02 | [Red-Nosed Reports](https://adventofcode.com/2024/day/2) | [](src/solutions/day02.py) || 15 | [](https://adventofcode.com/2024/day/15) | [](src/solutions/day15.py) |
+| 02 | [Red-Nosed Reports](https://adventofcode.com/2024/day/2) | [day02.py](src/solutions/day02.py) || 15 | [](https://adventofcode.com/2024/day/15) | [](src/solutions/day15.py) |
 | 03 | [Mull It Over](https://adventofcode.com/2024/day/3) | [](src/solutions/day03.py) || 16 | [](https://adventofcode.com/2024/day/16) | [](src/solutions/day16.py) |
 | 04 | [Ceres Search](https://adventofcode.com/2024/day/4) | [](src/solutions/day04.py) || 17 | [](https://adventofcode.com/2024/day/17) | [](src/solutions/day17.py) |
 | 05 | [Print Queue](https://adventofcode.com/2024/day/5) | [](src/solutions/day05.py) || 18 | [](https://adventofcode.com/2024/day/18) | [](src/solutions/day18.py) |
