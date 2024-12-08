@@ -13,7 +13,7 @@ def parse_input(data):
     return rules, books
 
 
-def correctly_ordered_idx(rules, books):
+def already_ordered(rules, books):
     correct_idx = []
     for i, pages in enumerate(books):
         correct = True
@@ -24,10 +24,16 @@ def correctly_ordered_idx(rules, books):
                     correct = False
         if correct:
             correct_idx.append(i)
-    return correct_idx
+
+    middle_sum = 0
+    for idx in correct_idx:
+        book = books[idx]
+        middle_sum += book[len(book)//2]        
+
+    return middle_sum, correct_idx
 
 
-def order_pages(rules, books):
+def order_pages(rules, books, correct_idx):
     for i, pages in enumerate(books):
         correct = False
         while not correct:
@@ -40,29 +46,27 @@ def order_pages(rules, books):
                         pages[idx0], pages[idx1] = pages[idx1], pages[idx0]
             if not changed:
                 correct = True
-    return books
+    
+    middle_sum = 0
+    for i, pages in enumerate(books):
+        if i not in correct_idx:
+            middle_sum += pages[len(pages)//2]
+
+    return middle_sum
 
 
 if __name__ == "__main__":
     data = load_data(TESTING, "\n\n")
     rules, books = parse_input(data)
 
-    correct_sum = 0
-    correct_idx = correctly_ordered_idx(rules, books)
+    # PART 1
+    # test:    143
+    # answer: 5762
+    middle_sum_1, correct_idx = already_ordered(rules, books)
+    print(middle_sum_1)
 
-    for idx in correct_idx:
-        corr_ord = books[idx]
-        correct_sum += corr_ord[len(corr_ord)//2]
-
-    print(correct_sum)
-
-
-    
-    ordered_pages = order_pages(rules, books)
-    new_ordering_sum = 0
-
-    for i, pages in enumerate(books):
-        if i not in correct_idx:
-            new_ordering_sum += pages[len(pages)//2]
-
-    print(new_ordering_sum)
+    # PART 2
+    # test:    123
+    # answer: 4130
+    middle_sum_2 = order_pages(rules, books, correct_idx)
+    print(middle_sum_2)
