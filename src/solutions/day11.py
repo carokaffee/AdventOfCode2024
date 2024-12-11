@@ -17,8 +17,7 @@ def parse_input(data):
 def do_iteration(stones):
     new_stones = defaultdict(int)
 
-    for stone in stones.keys():
-        num_stones = stones[stone]
+    for stone, num_stones in stones.items():
         if stone == 0:
             new_stones[1] += num_stones
         elif len(str(stone)) % 2 == 0:
