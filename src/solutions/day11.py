@@ -31,7 +31,7 @@ def do_iteration(stones):
 
 
 def blink_and_count(stones, times):
-    for i in range(times):
+    for _ in range(times):
         stones = do_iteration(stones)
 
     result = sum(stones.values())
@@ -51,6 +51,3 @@ if __name__ == "__main__":
     # test:    65601038650482
     # answer: 238317474993392
     print(blink_and_count(stones, 75))
-        
-
-
