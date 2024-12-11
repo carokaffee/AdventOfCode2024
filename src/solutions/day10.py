@@ -15,34 +15,43 @@ def get_neighbours(coord, max_x, max_y):
     return neighbours
 
 
+def hike(grid):
+    max_x = len(grid)
+    max_y = len(grid[0])
+    entry_points = ((i, j) for i in range(max_x) for j in range(max_y) if grid[i][j] == 0)
+    scores = 0
+    ratings = 0
+
+    for entry_point in entry_points:
+        end_points = set()
+        path_counter = 0
+        current = [entry_point]
+
+        while current:
+            x, y = current[0]
+            current_height = grid[x][y]
+            neighbours = get_neighbours((x, y), max_x, max_y)
+
+            for nx, ny in neighbours:
+                neighbour_height = grid[nx][ny]
+                if neighbour_height == 9 and current_height == 8:
+                    end_points.add((nx, ny))
+                    path_counter += 1
+                elif neighbour_height == current_height + 1:
+                    current.append((nx, ny))
+            current = current[1:]
+
+        scores += len(end_points)
+        ratings += path_counter
+
+    return scores, ratings
+
+
 if __name__ == "__main__":
     data = load_data(TESTING, "\n")
     grid = parse_input(data)
 
-    max_x = len(grid)
-    max_y = len(grid[0])
-
-    scores = 0
-    ratings = 0
-
-    for i, line in enumerate(grid):
-        for j, el in enumerate(line):
-            if el == 0:
-                nine_pos = set()
-                counter = 0
-                current_pos = [(i, j)]
-                while current_pos:
-                    u, v = current_pos[0]
-                    neighbours = get_neighbours((u, v), max_x, max_y)
-                    for x, y in neighbours:
-                        if grid[x][y] == 9 and grid[x][y] == grid[u][v] + 1:
-                            nine_pos.add((x, y))
-                            counter += 1
-                        elif grid[x][y] == grid[u][v] + 1:
-                            current_pos.append((x, y))
-                    current_pos = current_pos[1:]
-                scores += len(nine_pos)
-                ratings += counter
+    scores, ratings = hike(grid)
 
     # PART 1
     # test:    36
