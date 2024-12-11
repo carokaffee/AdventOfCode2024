@@ -17,7 +17,7 @@ def find_instruction_sum(instruction, do_dont):
 
 
 def enabled_instruction(instruction):
-    enabled_instruction = ''
+    enabled_instruction = ""
     current_index = 0
 
     while True:
@@ -32,13 +32,13 @@ def enabled_instruction(instruction):
             break
 
         current_index = end_index
-    
+
     return enabled_instruction
 
 
 if __name__ == "__main__":
-    instruction = load_data(TESTING, '\n\n')[0]
-    
+    instruction = load_data(TESTING, "\n\n")[0]
+
     # PART 1
     # test:         161
     # answer: 174561379
@@ -48,4 +48,3 @@ if __name__ == "__main__":
     # test:          48
     # answer: 106921067
     print(find_instruction_sum(instruction, True))
-    

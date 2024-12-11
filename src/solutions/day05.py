@@ -6,9 +6,9 @@ TESTING = False
 def parse_input(data):
     rules = []
     books = []
-    for line in data[0].split('\n'):
-        rules.append(tuple(map(int, line.split('|'))))
-    for line in data[1].split('\n'):
+    for line in data[0].split("\n"):
+        rules.append(tuple(map(int, line.split("|"))))
+    for line in data[1].split("\n"):
         books.append(list(map(int, line.split(","))))
     return rules, books
 
@@ -28,7 +28,7 @@ def already_ordered(rules, books):
     middle_sum = 0
     for idx in correct_idx:
         book = books[idx]
-        middle_sum += book[len(book)//2]        
+        middle_sum += book[len(book) // 2]
 
     return middle_sum, correct_idx
 
@@ -46,11 +46,11 @@ def order_pages(rules, books, correct_idx):
                         pages[idx0], pages[idx1] = pages[idx1], pages[idx0]
             if not changed:
                 correct = True
-    
+
     middle_sum = 0
     for i, pages in enumerate(books):
         if i not in correct_idx:
-            middle_sum += pages[len(pages)//2]
+            middle_sum += pages[len(pages) // 2]
 
     return middle_sum
 

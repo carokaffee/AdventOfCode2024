@@ -10,7 +10,7 @@ def parse_input(data):
     for i, line in enumerate(data):
         for j, el in enumerate(line):
             if el.isalnum():
-                antennas[el].append((i,j))
+                antennas[el].append((i, j))
     return antennas
 
 
@@ -18,7 +18,7 @@ def count_locations(antennas, *, repeat):
     locations = set()
 
     for el in antennas.keys():
-        for (x1,y1), (x2,y2) in permutations(antennas[el], 2):
+        for (x1, y1), (x2, y2) in permutations(antennas[el], 2):
             dx, dy = x1 - x2, y1 - y2
             if not repeat:
                 if x1 + dx in range(len(data)) and y1 + dy in range(len(data[0])):
@@ -34,7 +34,7 @@ def count_locations(antennas, *, repeat):
 if __name__ == "__main__":
     data = load_data(TESTING, "\n")
     antennas = parse_input(data)
-    
+
     # PART 1
     # test:    14
     # answer: 327
