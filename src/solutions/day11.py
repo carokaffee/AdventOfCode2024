@@ -7,10 +7,10 @@ TESTING = False
 def parse_input(data):
     raw_stones = list(map(int, data[0].split()))
     stones = defaultdict(int)
-    
+
     for stone in raw_stones:
         stones[stone] += 1
-    
+
     return stones
 
 
@@ -21,8 +21,8 @@ def do_iteration(stones):
         if stone == 0:
             new_stones[1] += num_stones
         elif len(str(stone)) % 2 == 0:
-            new_stones[int(str(stone)[:len(str(stone)) // 2])] += num_stones
-            new_stones[int(str(stone)[len(str(stone))//2:])] += num_stones
+            new_stones[int(str(stone)[: len(str(stone)) // 2])] += num_stones
+            new_stones[int(str(stone)[len(str(stone)) // 2 :])] += num_stones
         else:
             new_stones[stone * 2024] += num_stones
 
