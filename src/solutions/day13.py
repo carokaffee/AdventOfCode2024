@@ -22,7 +22,7 @@ def tokens_needed(machines, offset=0):
         Y += offset
 
         y = (Y - Ay / Ax * X) / (-Ay * Bx / Ax + By)
-        x = x = (X - y * Bx) / Ax
+        x = (X - y * Bx) / Ax
 
         x = int(x + 0.1)
         y = int(y + 0.1)
