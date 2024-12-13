@@ -33,15 +33,16 @@ if __name__ == "__main__":
                 current_region = {(i, j)}
                 queue = [(i, j)]
                 visited.add((i, j))
-                current = (i, j)
+
                 while queue:
                     u, v = queue[0]
-                    for x, y in get_neighbours(queue[0], max_x, max_y):
+                    for x, y in get_neighbours((u, v), max_x, max_y):
                         if data[x][y] == data[u][v] and (x, y) not in visited:
                             current_region.add((x, y))
                             visited.add((x, y))
                             queue.append((x, y))
                     queue = queue[1:]
+
                 regions.append(current_region)
 
     score = 0
