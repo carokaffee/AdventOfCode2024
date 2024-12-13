@@ -14,36 +14,24 @@ def parse_input(data):
     return padded_data
 
 
-def get_neighbours(current, max_x, max_y):
-    i, j = current
-    neighbours = []
-    if i + 1 < max_x:
-        neighbours.append((i + 1, j))
-    if i - 1 >= 0:
-        neighbours.append((i - 1, j))
-    if j + 1 < max_y:
-        neighbours.append((i, j + 1))
-    if j - 1 >= 0:
-        neighbours.append((i, j - 1))
+def get_neighbours(position):
+    x, y = position
+    directions = ((0, 1), (0, -1), (1, 0), (-1, 0))
+    neighbours = [(x + dx, y + dy) for dx, dy in directions]
 
     return neighbours
 
 
-if __name__ == "__main__":
-    data = load_data(TESTING, "\n")
+def solve_part_1(flowers):
     flowers = parse_input(data)
-
-    max_x = len(data)
-    max_y = len(data[0])
-
     visited = set()
     regions = []
-    borders2 = []
-    scores_new = 0
+    borders = []
+    score = 0
 
-    for i in range(len(data)):
-        for j in range(len(data[0])):
-            if (i, j) not in visited:
+    for i in range(len(flowers)):
+        for j in range(len(flowers[0])):
+            if flowers[i][j].isalpha() and (i, j) not in visited:
                 current_region = {(i, j)}
                 current_border = set()
                 queue = [(i, j)]
@@ -51,83 +39,68 @@ if __name__ == "__main__":
 
                 while queue:
                     x, y = queue[0]
-                    for nx, ny in get_neighbours((x, y), max_x, max_y):
-                        if data[nx][ny] == data[x][y] and (nx, ny) not in visited:
+                    for nx, ny in get_neighbours((x, y)):
+                        if flowers[nx][ny] == flowers[x][y] and (nx, ny) not in visited:
                             current_region.add((nx, ny))
                             visited.add((nx, ny))
                             queue.append((nx, ny))
-                        elif data[nx][ny] != data[x][y]:
+                        elif flowers[nx][ny] != flowers[x][y]:
                             current_border.add(((x, y), (nx - x, ny - y)))
                     queue = queue[1:]
 
                 regions.append(current_region)
-                borders2.append(current_border)
-                scores_new += len(current_region) * len(current_border)
+                borders.append(current_border)
+                score += len(current_region) * len(current_border)
 
+    return regions, borders, score
+
+
+def solve_part_2(regions, borders):
     score = 0
-    score_part2 = 0
 
-    for region in regions:
-        circum = 0
-        border = set()
-        for i, j in region:
-            for nx, ny in get_neighbours((i, j), max_x, max_y):
-                if data[nx][ny] != data[i][j]:
-                    circum += 1
-                    if nx == i:
-                        if ny < j:
-                            border.add(((i, j), (i + 1, j), "e"))
-                        else:
-                            border.add(((i, j + 1), (i + 1, j + 1), "w"))
-                    if ny == j:
-                        if nx < i:
-                            border.add(((i, j), (i, j + 1), "s"))
-                        else:
-                            border.add(((i + 1, j), (i + 1, j + 1), "n"))
-            if i == 0:
-                circum += 1
-                border.add(((i, j), (i, j + 1), "s"))
-            if i == max_x - 1:
-                circum += 1
-                border.add(((i + 1, j), (i + 1, j + 1), "n"))
-            if j == 0:
-                circum += 1
-                border.add(((i, j), (i + 1, j), "e"))
-            if j == max_y - 1:
-                circum += 1
-                border.add(((i, j + 1), (i + 1, j + 1), "w"))
-        score += circum * len(region)
+    for n in range(len(regions)):
+        region = regions[n]
+        fences = borders[n]
+        visited_fences = set()
+        fence_count = 0
 
-        visited_borders = set()
-        border_count = 0
-        for bord in border:
-            if bord not in visited_borders:
-                current_border = [bord]
-                border_count += 1
-                while current_border:
-                    (a, b), (c, d), direction = current_border[0]
-                    visited_borders.add(bord)
-                    if a == c:
-                        left = ((a, b - 1), (c, d - 1), direction)
-                        right = ((a, b + 1), (c, d + 1), direction)
-                        if left in border and left not in visited_borders:
-                            visited_borders.add(left)
-                            current_border.append(left)
-                        if right in border:
-                            visited_borders.add(right)
-                            current_border.append(right)
-                    else:
-                        up = ((a + 1, b), (c + 1, d), direction)
-                        down = ((a - 1, b), (c - 1, d), direction)
-                        if up in border and up not in visited_borders:
-                            visited_borders.add(up)
-                            current_border.append(up)
-                        if down in border:
-                            visited_borders.add(down)
-                            current_border.append(down)
-                    current_border = current_border[1:]
-        score_part2 += border_count * len(region)
+        for fence in fences:
+            if fence not in visited_fences:
+                queue = [fence]
+                fence_count += 1
 
-    print("old part 1", score)
-    print("new part 1", scores_new)
-    print("old part2", score_part2)
+                while queue:
+                    (x, y), direction = queue[0]
+                    dx, dy = direction
+                    visited_fences.add(fence)
+                    prev_fence = ((x - dy, y - dx), direction)
+                    next_fence = ((x + dy, y + dx), direction)
+                    possible_neighbours = [prev_fence, next_fence]
+
+                    for pn in possible_neighbours:
+                        if pn in fences and pn not in visited_fences:
+                            visited_fences.add(pn)
+                            queue.append(pn)
+
+                    queue = queue[1:]
+
+        score += fence_count * len(region)
+
+    return score
+
+
+if __name__ == "__main__":
+    data = load_data(TESTING, "\n")
+    flowers = parse_input(data)
+
+    # PART 1
+    # test:      1930
+    # answer: 1488414
+    regions, borders, score_1 = solve_part_1(flowers)
+    print(score_1)
+
+    # PART 2
+    # test:     1206
+    # answer: 911750
+    score_2 = solve_part_2(regions, borders)
+    print(score_2)
