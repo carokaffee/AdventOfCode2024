@@ -3,6 +3,17 @@ from src.tools.loader import load_data
 TESTING = False
 
 
+def parse_input(data):
+    padding_line = "." * (len(data[0]) + 2)
+    padded_data = [padding_line]
+
+    for line in data:
+        padded_data.append("." + line + ".")
+    padded_data += [padding_line]
+
+    return padded_data
+
+
 def get_neighbours(current, max_x, max_y):
     i, j = current
     neighbours = []
@@ -20,30 +31,38 @@ def get_neighbours(current, max_x, max_y):
 
 if __name__ == "__main__":
     data = load_data(TESTING, "\n")
+    flowers = parse_input(data)
 
     max_x = len(data)
     max_y = len(data[0])
 
     visited = set()
     regions = []
+    borders2 = []
+    scores_new = 0
 
     for i in range(len(data)):
         for j in range(len(data[0])):
             if (i, j) not in visited:
                 current_region = {(i, j)}
+                current_border = set()
                 queue = [(i, j)]
                 visited.add((i, j))
 
                 while queue:
-                    u, v = queue[0]
-                    for x, y in get_neighbours((u, v), max_x, max_y):
-                        if data[x][y] == data[u][v] and (x, y) not in visited:
-                            current_region.add((x, y))
-                            visited.add((x, y))
-                            queue.append((x, y))
+                    x, y = queue[0]
+                    for nx, ny in get_neighbours((x, y), max_x, max_y):
+                        if data[nx][ny] == data[x][y] and (nx, ny) not in visited:
+                            current_region.add((nx, ny))
+                            visited.add((nx, ny))
+                            queue.append((nx, ny))
+                        elif data[nx][ny] != data[x][y]:
+                            current_border.add(((x, y), (nx - x, ny - y)))
                     queue = queue[1:]
 
                 regions.append(current_region)
+                borders2.append(current_border)
+                scores_new += len(current_region) * len(current_border)
 
     score = 0
     score_part2 = 0
@@ -52,16 +71,16 @@ if __name__ == "__main__":
         circum = 0
         border = set()
         for i, j in region:
-            for x, y in get_neighbours((i, j), max_x, max_y):
-                if data[x][y] != data[i][j]:
+            for nx, ny in get_neighbours((i, j), max_x, max_y):
+                if data[nx][ny] != data[i][j]:
                     circum += 1
-                    if x == i:
-                        if y < j:
+                    if nx == i:
+                        if ny < j:
                             border.add(((i, j), (i + 1, j), "e"))
                         else:
                             border.add(((i, j + 1), (i + 1, j + 1), "w"))
-                    if y == j:
-                        if x < i:
+                    if ny == j:
+                        if nx < i:
                             border.add(((i, j), (i, j + 1), "s"))
                         else:
                             border.add(((i + 1, j), (i + 1, j + 1), "n"))
@@ -109,5 +128,6 @@ if __name__ == "__main__":
                     current_border = current_border[1:]
         score_part2 += border_count * len(region)
 
-    print(score)
-    print(score_part2)
+    print("old part 1", score)
+    print("new part 1", scores_new)
+    print("old part2", score_part2)
