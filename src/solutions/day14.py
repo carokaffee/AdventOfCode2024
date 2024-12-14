@@ -1,4 +1,5 @@
 from src.tools.loader import load_data
+from math import prod
 
 TESTING = False
 
@@ -30,16 +31,18 @@ def move_robots(robots, seconds):
 
 def calc_safety_factor(positions):
     quadrants = [0, 0, 0, 0]
+
     for x, y in positions:
-        if 0 <= x < MAX_X // 2 and 0 <= y < MAX_Y // 2:
-            quadrants[0] += 1
-        elif 0 <= x < MAX_X // 2 and MAX_Y // 2 < y < MAX_Y:
-            quadrants[1] += 1
-        elif MAX_X // 2 < x < MAX_X and 0 <= y < MAX_Y // 2:
-            quadrants[2] += 1
-        elif MAX_X // 2 < x < MAX_X and MAX_Y // 2 < y < MAX_Y:
-            quadrants[3] += 1
-    return quadrants[0] * quadrants[1] * quadrants[2] * quadrants[3]
+        left = 0 <= x < MAX_X // 2
+        right = MAX_X // 2 < x < MAX_X
+        up = 0 <= y < MAX_Y // 2
+        down = MAX_Y // 2 < y < MAX_Y
+        quadrants[0] += left and up
+        quadrants[1] += left and down
+        quadrants[2] += right and up
+        quadrants[3] += right and down
+
+    return prod(quadrants)
 
 
 def solve_part_1(robots):
