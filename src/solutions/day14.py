@@ -3,9 +3,9 @@ from math import prod
 
 TESTING = False
 
-# MAX_X = 11
+# MAX_X = 11 # for test input
 MAX_X = 101
-# MAX_Y = 7
+# MAX_Y = 7 # for test input
 MAX_Y = 103
 
 
@@ -52,10 +52,11 @@ def solve_part_1(robots):
 
 
 def solve_part_2(robots):
-    # possible_solutions = list(range(1000))
-    # found horizontal and vertical patterns starting at 88 resp. 12 and being 103 resp. 101 seconds apart
-    # so specifically looking for a christmas tree at these values
-    possible_solutions = sorted([88 + i * 103 for i in range(100)] + [12 + i * 101 for i in range(100)])
+    # possible_solutions = list(range(101 * 103))
+    # we know that after lcm(101,103) = 101 * 103 seconds, all patterns repeat
+    # I found horizontal and vertical patterns starting at 88 resp. 12 and being 103 resp. 101 seconds apart
+    # so I specifically looked for a christmas tree at these values
+    possible_solutions = sorted([88 + i * 103 for i in range(101)] + [12 + i * 101 for i in range(103)])
 
     for i in possible_solutions:
         print(i)
