@@ -1,59 +1,106 @@
 from src.tools.loader import load_data
-from collections import defaultdict
 
-TESTING = True
+TESTING = False
+
+
+def parse_filesystem(data):
+    filesystem = []
+    for i, num in enumerate(data[0]):
+        num = int(num)
+        if i % 2 == 0:
+            filesystem.append([(num, i // 2)])
+        else:
+            filesystem.append([(num, None)])
+    return filesystem
+
+
+def solve_part_1(filesystem):
+    length = len(filesystem)
+    start_ptr = 1
+    end_ptr = length - 1 if (length - 1) % 2 == 0 else length - 2
+
+    while start_ptr < end_ptr:
+        available_space, is_filled = filesystem[start_ptr][-1]
+        needed_space, id = filesystem[end_ptr][-1]
+        if is_filled is None:
+            if available_space > needed_space:
+                filesystem[start_ptr] = (
+                    filesystem[start_ptr][:-1] + [(needed_space, id)] + [(available_space - needed_space, None)]
+                )
+                filesystem[end_ptr] = [(needed_space, None)]
+                end_ptr -= 2
+            elif available_space < needed_space:
+                filesystem[start_ptr] = filesystem[start_ptr][:-1] + [(available_space, id)]
+                filesystem[end_ptr] = [(needed_space - available_space, id)]
+                start_ptr += 2
+            else:
+                filesystem[start_ptr] = filesystem[start_ptr][:-1] + [(available_space, id)]
+                filesystem[end_ptr] = [(needed_space, None)]
+                start_ptr += 2
+                end_ptr -= 2
+        else:
+            start_ptr += 2
+
+    return filesystem
+
+
+def solve_part_2(filesystem):
+    length = len(filesystem)
+    end_ptr = length - 1 if (length - 1) % 2 == 0 else length - 2
+
+    while end_ptr > 0:
+        start_ptr = 1
+        needed_space, id = filesystem[end_ptr][-1]
+
+        while start_ptr < end_ptr:
+            available_space, is_filled = filesystem[start_ptr][-1]
+            if is_filled is None:
+                if available_space > needed_space:
+                    filesystem[start_ptr] = (
+                        filesystem[start_ptr][:-1] + [(needed_space, id)] + [(available_space - needed_space, None)]
+                    )
+                    filesystem[end_ptr] = [(needed_space, None)]
+                    start_ptr = end_ptr
+                elif available_space < needed_space:
+                    start_ptr += 2
+                else:
+                    filesystem[start_ptr] = filesystem[start_ptr][:-1] + [(available_space, id)]
+                    filesystem[end_ptr] = [(needed_space, None)]
+                    start_ptr = end_ptr
+            else:
+                start_ptr += 2
+
+        end_ptr -= 2
+
+    return filesystem
+
+
+def calculate_checksum(filesystem):
+    current_id = 0
+    checksum = 0
+
+    for register in filesystem:
+        for space, id in register:
+            for _ in range(space):
+                checksum += sum([current_id * id if id is not None else 0])
+                current_id += 1
+
+    return checksum
 
 
 if __name__ == "__main__":
     data = load_data(TESTING, "\n")
-    print(len(data[0]))
 
-    files = []
-    free_space = []
-    for i, el in enumerate(data[0]):
-        if i % 2 == 0:
-            files.append(int(el))
-        else:
-            free_space.append(int(el))
-    print(data)
-    print("files", files)
-    print("free space", free_space)
+    # PART 1
+    # test:            1928
+    # answer: 6337367222422
+    filesystem = parse_filesystem(data)
+    filesystem_part1 = solve_part_1(filesystem)
+    print(calculate_checksum(filesystem_part1))
 
-    compressed_file = defaultdict(list)
-
-    for i, el in enumerate(data[0]):
-        if i % 2 == 0:
-            compressed_file[i].append((int(el), i // 2))
-        else:
-            compressed_file[i].append((int(el), None))
-
-    print(compressed_file)
-
-    current_last_idx = ((len(data[0]) - 1) // 2) * 2
-    print(current_last_idx)
-
-    for i, el in enumerate(data[0]):
-        while compressed_file[i][-1][1] is None and current_last_idx > i:
-            new_ith_element = []
-            number, element = compressed_file[i][-1]
-            if element is None and current_last_idx > i:
-                print(compressed_file[current_last_idx], current_last_idx)
-                last_num, last_el = compressed_file[current_last_idx][0]
-                if last_el is not None:
-                    if last_num < number:
-                        new_ith_element = compressed_file[i][:-1] + [(last_num, last_el)] + [(number - last_num, None)]
-                        compressed_file[i] = new_ith_element
-                        compressed_file[current_last_idx] = [(last_num, None)]
-                        current_last_idx -= 2
-                    elif last_num == number:
-                        new_ith_element = compressed_file[i][:-1] + [(last_num, last_el)]
-                        compressed_file[i] = new_ith_element
-                        compressed_file[current_last_idx] = [(last_num, None)]
-                        current_last_idx -= 2
-                    else:
-                        new_ith_element = compressed_file[i][:-1] + [(last_num, last_el)]
-                        compressed_file[i] = new_ith_element
-                        compressed_file[current_last_idx] = [(last_num, None)]
-                        current_last_idx -= 2
-
-    print(compressed_file)
+    # PART 2
+    # test:            2858
+    # answer: 6361380647183
+    filesystem = parse_filesystem(data)
+    filesystem_part2 = solve_part_2(filesystem)
+    print(calculate_checksum(filesystem_part2))
