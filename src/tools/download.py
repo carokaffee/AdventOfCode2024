@@ -20,11 +20,8 @@ def get_filename(day_no: int, use_test_input: bool) -> Path:
 def download_data(day_no: int):
     filename = get_filename(day_no, use_test_input=False)
     if filename.exists():
-        #return
-        pass
+        return
     with open(filename, "w") as f:
         cookie_dict = {"session": get_sessionname()}
-        request = get(
-            f"https://adventofcode.com/2024/day/{day_no}/input", cookies=cookie_dict
-        )
+        request = get(f"https://adventofcode.com/2024/day/{day_no}/input", cookies=cookie_dict)
         f.write(request.text)
