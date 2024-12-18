@@ -1,5 +1,4 @@
 from src.tools.loader import load_data
-from collections import defaultdict
 
 TESTING = False
 
@@ -69,25 +68,27 @@ def do_dijkstra(grid):
 def find_shortest_path(bytes):
     grid = create_grid(bytes[:BYTE_LENGTH])
     shortest_path = do_dijkstra(grid)
+
     return shortest_path
 
 
 def find_blocking_byte(bytes):
-    done = False
-    counter = 1024 if not TESTING else 7
+    min_counter = 0
+    max_counter = len(bytes)
 
-    while not done:
-        counter += 1
-        # print("counter", counter)
-        new_bytes = tuple(bytes[:counter])
+    while max_counter - min_counter > 1:
+        counter = (max_counter + min_counter) // 2
+        new_bytes = tuple(bytes[: counter + 1])
 
         grid = create_grid(new_bytes)
         result = do_dijkstra(grid)
 
         if result == -1:
-            done = True
+            max_counter = counter
+        else:
+            min_counter = counter
 
-    return bytes[counter - 1]
+    return bytes[max_counter]
 
 
 if __name__ == "__main__":
