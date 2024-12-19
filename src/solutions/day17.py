@@ -26,8 +26,7 @@ def perform_instruction(registers, opcode, operand, instruction_pointer):
     instruction = INSTRUCTIONS[opcode]
     new_instruction_pointer = instruction_pointer
     literal_operand = operand
-    combo_table = {0: 0, 1: 1, 2: 2, 3: 3, 4: reg_a, 5: reg_b, 6: reg_c}
-    combo_operand = combo_table[operand] if operand != 7 else None
+    combo_operand = [0, 1, 2, 3, reg_a, reg_b, reg_c][operand] if operand != 7 else None
     output = ""
 
     match instruction:
