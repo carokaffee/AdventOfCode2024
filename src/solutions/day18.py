@@ -16,15 +16,11 @@ def parse_input(data):
 
 
 def create_grid(bytes):
+    bytes_set = set(bytes)
     grid = []
 
     for i in range(MAX_X):
-        line = ""
-        for j in range(MAX_Y):
-            if (i, j) in bytes:
-                line = line + "#"
-            else:
-                line = line + "."
+        line = "".join("#" if (i, j) in bytes_set else "." for j in range(MAX_Y))
         grid.append(line)
 
     return grid
