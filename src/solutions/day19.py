@@ -6,51 +6,52 @@ TESTING = False
 
 def parse_input(data):
     patterns = set(tuple(data[0].split(", ")))
-    goals = tuple(data[1].split("\n"))
+    designs = tuple(data[1].split("\n"))
 
-    return patterns, goals
+    return patterns, designs
 
 
-def count_possibilities(patterns, towels):
-    count_if_possible = 0
-    count_number_of_ways = 0
+def count_possibilities(patterns, designs):
+    possible_count = 0
+    total_arrangements = 0
 
-    for towel in towels:
-        is_doable = False
-        part_of_towels = set([pattern for pattern in patterns if towel.startswith(pattern)])
-        number_of_ways = defaultdict(int)
-        number_of_ways.update({pattern: 1 for pattern in part_of_towels})
+    for design in designs:
+        is_possible = False
+        valid_prefixes = set([p for p in patterns if design.startswith(p)])
+        arrangements = defaultdict(int, {p: 1 for p in valid_prefixes})
 
-        while part_of_towels:
-            part_of_towel = min(part_of_towels, key=len)
-            part_of_towels.remove(part_of_towel)
+        while valid_prefixes:
+            prefix = min(valid_prefixes, key=len)
+            valid_prefixes.remove(prefix)
+
+            if prefix == design:
+                is_possible = True
+                break
 
             for pattern in patterns:
-                index = len(part_of_towel)
-                if towel[index:].startswith(pattern):
-                    part_of_towels.add(part_of_towel + pattern)
-                    number_of_ways[part_of_towel + pattern] += number_of_ways[part_of_towel]
-                if part_of_towel == towel:
-                    is_doable = True
+                next_prefix = prefix + pattern
+                if design.startswith(next_prefix):
+                    valid_prefixes.add(next_prefix)
+                    arrangements[next_prefix] += arrangements[prefix]
 
-        if is_doable:
-            count_if_possible += 1
-            count_number_of_ways += number_of_ways[towel]
+        if is_possible:
+            possible_count += 1
+            total_arrangements += arrangements[design]
 
-    return count_if_possible, count_number_of_ways
+    return possible_count, total_arrangements
 
 
 if __name__ == "__main__":
     data = load_data(TESTING, "\n\n")
-    patterns, towels = parse_input(data)
-    count_if_possible, count_number_of_ways = count_possibilities(patterns, towels)
+    patterns, designs = parse_input(data)
+    possible_count, total_arrangements = count_possibilities(patterns, designs)
 
     # PART 1
     # test:     6
     # answer: 367
-    print(count_if_possible)
+    print(possible_count)
 
     # PART 2
     # test:                16
     # answer: 724388733465031
-    print(count_number_of_ways)
+    print(total_arrangements)
