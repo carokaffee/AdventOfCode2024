@@ -11,6 +11,12 @@ def find_start_and_end(maze):
     return start, end
 
 
+def get_neighbours(position, maze):
+    x, y = position
+    neighbours = [(x + dx, y + dy) for dx, dy in DIRECTIONS if maze[x + dx][y + dy] != "#"]
+    return neighbours
+
+
 def initialize(maze, start):
     paths = dict()
     previous = dict()
@@ -28,49 +34,38 @@ def initialize(maze, start):
     return paths, previous
 
 
-def get_neighbours(position, maze):
-    x, y = position
-    neighbours = [(x + dx, y + dy) for dx, dy in DIRECTIONS if maze[x + dx][y + dy] != "#"]
-    return neighbours
-
-
 def solve_maze(maze, start, end):
     paths, previous = initialize(maze, start)
     queue = [(start, START_DIR)]
 
     while queue:
         queue = sorted(queue, key=paths.__getitem__)
-        (x, y), current_dir = queue.pop(0)
+        pos = queue.pop(0)
+        (x, y), current_dir = pos
         neighbours = get_neighbours((x, y), maze)
 
         for nx, ny in neighbours:
             next_dir = (nx - x, ny - y)
-            rotation = next_dir != current_dir
-            step_cost = 1001 if rotation else 1
-            pos = ((x, y), current_dir)
             next_pos = ((nx, ny), next_dir)
-            current_cost = paths[pos]
+            step_cost = 1001 if next_dir != current_dir else 1
+            next_cost = paths[pos] + step_cost
 
-            if paths[next_pos] is None:
-                paths[next_pos] = current_cost + step_cost
+            if paths[next_pos] is None or next_cost < paths[next_pos]:
+                paths[next_pos] = next_cost
                 queue.append(next_pos)
                 previous[next_pos] = [pos]
-            else:
-                if current_cost + step_cost < paths[next_pos]:
-                    paths[next_pos] = current_cost + step_cost
-                    queue.append(next_pos)
-                    previous[next_pos] = [pos]
-                elif current_cost + step_cost == paths[next_pos]:
-                    previous[next_pos] += [pos]
+            elif next_cost == paths[next_pos]:
+                previous[next_pos] += [pos]
 
     shortest_path = min(paths[(end, dir)] for dir in DIRECTIONS if paths[(end, dir)] is not None)
+    end_positions = [(end, dir) for dir in DIRECTIONS if paths[(end, dir)] == shortest_path]
 
-    return shortest_path, previous
+    return shortest_path, previous, end_positions
 
 
-def find_best_path_points(previous, end):
+def find_best_path_points(previous, end_positions):
     best_points = set()
-    queue = [(end, START_DIR)]
+    queue = end_positions
 
     while queue:
         current = queue.pop(0)
@@ -84,7 +79,7 @@ def find_best_path_points(previous, end):
 if __name__ == "__main__":
     maze = load_data(TESTING, "\n")
     start, end = find_start_and_end(maze)
-    shortest_path, previous = solve_maze(maze, start, end)
+    shortest_path, previous, end_positions = solve_maze(maze, start, end)
 
     # PART 1
     # test:    11048
@@ -94,4 +89,4 @@ if __name__ == "__main__":
     # PART 1
     # test:    64
     # answer: 535
-    print(find_best_path_points(previous, end))
+    print(find_best_path_points(previous, end_positions))

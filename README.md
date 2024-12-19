@@ -8,7 +8,7 @@ My solutions for AoC 2024 written in Python.
 | :---: | --- | --- | --- | :---: | --- | --- |
 | 01 | [Historian Hysteria](https://adventofcode.com/2024/day/1) | [day01.py](src/solutions/day01.py) || 14 | [Restroom Redoubt](https://adventofcode.com/2024/day/14) | [day14.py](src/solutions/day14.py) |
 | 02 | [Red-Nosed Reports](https://adventofcode.com/2024/day/2) | [day02.py](src/solutions/day02.py) || 15 | [Warehouse Woes](https://adventofcode.com/2024/day/15) | [day15.py](src/solutions/day15.py) |
-| 03 | [Mull It Over](https://adventofcode.com/2024/day/3) | [day03.py](src/solutions/day03.py) || 16 | [Reindeer Maze](https://adventofcode.com/2024/day/16) | [](src/solutions/day16.py) |
+| 03 | [Mull It Over](https://adventofcode.com/2024/day/3) | [day03.py](src/solutions/day03.py) || 16 | [Reindeer Maze](https://adventofcode.com/2024/day/16) | [day16.py](src/solutions/day16.py) |
 | 04 | [Ceres Search](https://adventofcode.com/2024/day/4) | [day04.py](src/solutions/day04.py) || 17 | [Chronospatial Computer](https://adventofcode.com/2024/day/17) | [day17.py](src/solutions/day17.py) |
 | 05 | [Print Queue](https://adventofcode.com/2024/day/5) | [day05.py](src/solutions/day05.py) || 18 | [RAM Run](https://adventofcode.com/2024/day/18) | [day18.py](src/solutions/day18.py) |
 | 06 | [Guard Gallivant](https://adventofcode.com/2024/day/6) | [day06.py](src/solutions/day06.py) || 19 | [Linen Layout](https://adventofcode.com/2024/day/19) | [day19.py](src/solutions/day19.py) |
