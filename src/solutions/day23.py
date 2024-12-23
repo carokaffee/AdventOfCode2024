@@ -1,5 +1,4 @@
 from src.tools.loader import load_data
-from collections import defaultdict
 from itertools import combinations
 import networkx as nx
 
@@ -8,55 +7,51 @@ TESTING = False
 
 def parse_input(data):
     computers = set()
-    connections = defaultdict(set)
+    edges = set()
+
     for line in data:
         a, b = line.split("-")
-        computers.add(a)
-        computers.add(b)
-        connections[a].add(b)
-        connections[b].add(a)
-    return computers, connections
+        computers.update({a, b})
+        edges.add((a, b))
+
+    return computers, edges
+
+
+def initialize_graph(computers, edges):
+    G = nx.Graph()
+    G.add_nodes_from(computers)
+    G.add_edges_from(edges)
+    return G
+
+
+def find_chief_historian_cliques(G):
+    chief_cliques = set()
+    for node in [n for n in G.nodes() if n.startswith("t")]:
+        for a, b in combinations(G.neighbors(node), 2):
+            if G.has_edge(a, b):
+                chief_cliques.add(tuple(sorted([a, b, node])))
+
+    return len(chief_cliques)
+
+
+def find_largest_clique(G):
+    cliques = list(nx.find_cliques(G))
+    largest_clique = sorted(max(cliques, key=len))
+    return ",".join(largest_clique)
 
 
 if __name__ == "__main__":
     data = load_data(TESTING, "\n")
 
-    computers, connections = parse_input(data)
+    computers, edges = parse_input(data)
+    G = initialize_graph(computers, edges)
 
-    list_of_three_sets = []
-    set_of_three_tuples = set()
+    # PART 1
+    # test:      7
+    # answer: 1368
+    print(find_chief_historian_cliques(G))
 
-    for computer in computers:
-        if computer.startswith("t"):
-            for a, b in combinations(computers, 2):
-                if a != computer and b != computer and a != b:
-                    if a in connections[b] and b in connections[computer] and computer in connections[a]:
-                        if set([a, b, computer]) not in list_of_three_sets:
-                            list_of_three_sets.append(set([a, b, computer]))
-                            set_of_three_tuples.add(tuple([a, b, computer]))
-
-    print(len(set_of_three_tuples))
-
-    computers, connections = parse_input(data)
-    G = nx.Graph()
-
-    for comp in computers:
-        G.add_node(comp)
-
-    set_of_edges = set()
-    for line in data:
-        a, b = line.split("-")
-        set_of_edges.add((a, b))
-
-    for a, b in set_of_edges:
-        G.add_edge(a, b)
-
-    iterators = list(nx.find_cliques(G))
-
-    solution = max(iterators, key=len)
-
-    print(solution)
-    for a in sorted(solution):
-        print(a, end=",")
-
-    print()
+    # PART 2
+    # test:                              co,de,ka,ta
+    # answer: dd,ig,il,im,kb,kr,pe,ti,tv,vr,we,xu,zi
+    print(find_largest_clique(G))
