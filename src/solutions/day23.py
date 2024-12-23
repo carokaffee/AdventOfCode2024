@@ -7,20 +7,20 @@ TESTING = False
 
 def parse_input(data):
     computers = set()
-    edges = set()
+    connections = set()
 
     for line in data:
         a, b = line.split("-")
         computers.update({a, b})
-        edges.add((a, b))
+        connections.add((a, b))
 
-    return computers, edges
+    return computers, connections
 
 
-def initialize_graph(computers, edges):
+def initialize_graph(computers, connections):
     G = nx.Graph()
     G.add_nodes_from(computers)
-    G.add_edges_from(edges)
+    G.add_edges_from(connections)
     return G
 
 
@@ -43,8 +43,8 @@ def find_largest_clique(G):
 if __name__ == "__main__":
     data = load_data(TESTING, "\n")
 
-    computers, edges = parse_input(data)
-    G = initialize_graph(computers, edges)
+    computers, connections = parse_input(data)
+    G = initialize_graph(computers, connections)
 
     # PART 1
     # test:      7
