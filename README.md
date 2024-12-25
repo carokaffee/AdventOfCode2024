@@ -17,5 +17,5 @@ My solutions for AoC 2024 written in Python.
 | 09 | [Disk Fragmenter](https://adventofcode.com/2024/day/9) | [day09.py](src/solutions/day09.py) || 22 | [Monkey Market](https://adventofcode.com/2024/day/22) | [](src/solutions/day22.py) |
 | 10 | [Hoof It](https://adventofcode.com/2024/day/10) | [day10.py](src/solutions/day10.py) || 23 | [LAN Party](https://adventofcode.com/2024/day/23) | [day23.py](src/solutions/day23.py) |
 | 11 | [Plutonian Pebbles](https://adventofcode.com/2024/day/11) | [day11.py](src/solutions/day11.py) || 24 | [Crossed Wires](https://adventofcode.com/2024/day/24) | [](src/solutions/day24.py) |
-| 12 | [Garden Groups](https://adventofcode.com/2024/day/12) | [day12.py](src/solutions/day12.py) || 25 | [Code Chronicle](https://adventofcode.com/2024/day/25) | [](src/solutions/day25.py) |
+| 12 | [Garden Groups](https://adventofcode.com/2024/day/12) | [day12.py](src/solutions/day12.py) || 25 | [Code Chronicle](https://adventofcode.com/2024/day/25) | [day25.py](src/solutions/day25.py) |
 | 13 | [Claw Contraption](https://adventofcode.com/2024/day/13) | [day13.py](src/solutions/day13.py) |
