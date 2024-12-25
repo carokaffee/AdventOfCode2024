@@ -8,42 +8,46 @@ def parse_input(data):
     keys = []
 
     for grid in data:
-        is_lock = True if "." not in grid.split("\n")[0] else False
+        lines = grid.split("\n")
+        width = len(lines[0])
+        is_lock = True if "." not in lines[0] else False
+
+        pins = [0 for _ in range(width)]
+
+        for line in lines:
+            for j, el in enumerate(line):
+                if is_lock and el == "#" or not is_lock and el == ".":
+                    pins[j] += 1
 
         if is_lock:
-            locks.append([0 for _ in range(len(grid.split("\n")[0]))])
-            for line in grid.split("\n")[1:]:
-                for i, el in enumerate(line):
-                    if el == "#":
-                        locks[-1][i] += 1
+            locks.append(pins)
         else:
-            keys.append([0 for _ in range(len(grid.split("\n")[0]))])
-            for line in list(reversed(grid.split("\n")))[1:]:
-                for i, el in enumerate(line):
-                    if el == "#":
-                        keys[-1][i] += 1
+            keys.append(pins)
 
-    height = len(data[0].split("\n"))
+    return locks, keys
 
-    return locks, keys, height
+
+def count_fititng_keys(lock, key):
+    counter = 0
+
+    for lock in locks:
+        for key in keys:
+            found = True
+            for i in range(len(lock)):
+                if key[i] < lock[i]:
+                    found = False
+
+            if found:
+                counter += 1
+
+    return counter
 
 
 if __name__ == "__main__":
     data = load_data(TESTING, "\n\n")
-    locks, keys, height = parse_input(data)
+    locks, keys = parse_input(data)
 
-    count = 0
-
-    for lock in locks:
-        for key in keys:
-            comb = [0 for _ in range(len(key))]
-            found = True
-            for i in range(len(lock)):
-                comb[i] = lock[i] + key[i]
-            for i in range(len(comb)):
-                if comb[i] >= height - 1:
-                    found = False
-            if found:
-                count += 1
-
-    print(count)
+    # PART 1
+    # test:      3
+    # answer: 2586
+    print(count_fititng_keys(locks, keys))
